@@ -1,0 +1,5 @@
+C:\Users\perry\Desktop\csharpsockets\dotnetsocketsglobals\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\perry\Desktop\csharpsockets\dotnetsocketsglobals\bin\Debug\dotnetsocketsglobals.dll
+C:\Users\perry\Desktop\csharpsockets\dotnetsocketsglobals\bin\Debug\dotnetsocketsglobals.pdb
+C:\Users\perry\Desktop\csharpsockets\dotnetsocketsglobals\obj\Debug\dotnetsocketsglobals.dll
+C:\Users\perry\Desktop\csharpsockets\dotnetsocketsglobals\obj\Debug\dotnetsocketsglobals.pdb

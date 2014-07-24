@@ -1,0 +1,14 @@
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsserver\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.frmServer.resources
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.Properties.Resources.resources
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csproj.GenerateResource.Cache
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\ResolveAssemblyReference.cache
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.frmServer.resources
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.Properties.Resources.resources
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csproj.GenerateResource.Cache
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.exe
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.pdb
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\bin\Debug\dotnetsocketsglobals.dll
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\bin\Debug\dotnetsocketsglobals.pdb
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb

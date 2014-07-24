@@ -1,0 +1,20 @@
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.frmClient.resources
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.Properties.Resources.resources
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.GenerateResource.Cache
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.exe
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.pdb
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.dll
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.pdb
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.exe
+C:\Users\perry\Desktop\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.pdb
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.exe
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.pdb
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.exe
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.pdb
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.dll
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.pdb
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\ResolveAssemblyReference.cache
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.frmClient.resources
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.Properties.Resources.resources
+C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.GenerateResource.Cache
