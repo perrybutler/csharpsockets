@@ -18,3 +18,5 @@ C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\Re
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.frmClient.resources
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.Properties.Resources.resources
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.GenerateResource.Cache
+C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.exe
+C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.pdb

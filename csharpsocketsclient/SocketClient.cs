@@ -139,7 +139,6 @@ namespace csharpsocketsclient
             //RaiseEvent MessageReceived(argMsg & " | " & argDat)
         }
 
-
         public void SendMessageToServer(string argCommandString)
         {
             // create a Packet object from the passed data; this packet can be any object type because we use serialization!

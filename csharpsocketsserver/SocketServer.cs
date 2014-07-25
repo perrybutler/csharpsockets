@@ -38,32 +38,31 @@ namespace csharpsocketsserver
         /// StartServer starts the server by listening for new client connections with a TcpListener.
         /// </summary>
         /// <remarks></remarks>
-
         public void StartServer()
-	{
-		// create the TcpListener which will listen for and accept new client connections asynchronously
-		cServerSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+	    {
+		    // create the TcpListener which will listen for and accept new client connections asynchronously
+		    cServerSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-		// convert the server address and port into an ipendpoint
-		IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);
-		IPEndPoint mEndPoint = null;
-        foreach (IPAddress mHostAddress in mHostAddresses)
-        {
-			if (mHostAddress.AddressFamily == AddressFamily.InterNetwork) {
-				mEndPoint = new IPEndPoint(mHostAddress, cServerPort);
-			}
-		}
+		    // convert the server address and port into an ipendpoint
+		    IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);
+		    IPEndPoint mEndPoint = null;
+            foreach (IPAddress mHostAddress in mHostAddresses)
+            {
+			    if (mHostAddress.AddressFamily == AddressFamily.InterNetwork) {
+				    mEndPoint = new IPEndPoint(mHostAddress, cServerPort);
+			    }
+		    }
 
-		// bind to the server's ipendpoint
-		cServerSocket.Bind(mEndPoint);
+		    // bind to the server's ipendpoint
+		    cServerSocket.Bind(mEndPoint);
 
-		// configure the listener to allow 1 incoming connection at a time
-		cServerSocket.Listen(1);
+		    // configure the listener to allow 1 incoming connection at a time
+		    cServerSocket.Listen(1);
 
-		// accept client connection async
-		cServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), cServerSocket);
+		    // accept client connection async
+		    cServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), cServerSocket);
 
-	}
+	    }
 
         public void StopServer()
         {
@@ -216,7 +215,6 @@ namespace csharpsocketsserver
         /// QueueMessage prepares a Message object containing our data to send and queues this Message object in the OutboundMessageQueue.
         /// </summary>
         /// <remarks></remarks>
-
         public void SendMessageToClient(string argCommandString, Socket argClient)
         {
             // parse the command string
@@ -247,8 +245,7 @@ namespace csharpsocketsserver
             SocketGlobals.AsyncSendState mState = new SocketGlobals.AsyncSendState(argClient);
 
             // resize the BytesToSend array to fit both the mSizeBytes and the mPacketBytes
-            // ERROR: Not supported in C#: ReDimStatement
-
+            // TODO: ReDim mState.BytesToSend(mPacketBytes.Length + mSizeBytes.Length - 1)
 
             // copy the mSizeBytes and mPacketBytes to the BytesToSend array
             System.Buffer.BlockCopy(mSizeBytes, 0, mState.BytesToSend, 0, mSizeBytes.Length);
@@ -264,7 +261,6 @@ namespace csharpsocketsserver
         {
             // get the async state object which was returned by the async beginsend method
             SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState) ar.AsyncState;
-
 
             try
             {
@@ -285,14 +281,11 @@ namespace csharpsocketsserver
 
                 // at this point, the EndSend succeeded and we are ready to send something else!
 
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("DataSent error: " + ex.Message);
-
             }
-
         }
 
     }

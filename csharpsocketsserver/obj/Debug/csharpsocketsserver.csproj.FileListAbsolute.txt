@@ -12,3 +12,5 @@ C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\bin\Debug\do
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\bin\Debug\dotnetsocketsglobals.pdb
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb
+C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
+C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb
