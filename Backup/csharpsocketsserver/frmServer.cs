@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace csharpsocketsserver
 {
+    using System.Net;
     using System.Net.Sockets;
 
-    internal delegate void MessageReceivedDelegate(string argMessage, Socket argClientSocket);
-
-    internal delegate void ClientConnectedDelegate(Socket argClientSocket);
-
-    internal delegate void ClientDisconnectedDelegate(Socket argClientSocket);
+    delegate void MessageReceivedDelegate(string argMessage, Socket argClientSocket);
+    delegate void ClientConnectedDelegate(Socket argClientSocket);
+    delegate void ClientDisconnectedDelegate(Socket argClientSocket);
 
     public partial class frmServer : Form
     {
-        private SocketServer server = new SocketServer();
-
+        SocketServer server = new SocketServer();
+        
         public frmServer()
         {
             server.ClientConnected += new SocketServer.ClientConnectedEventHandler(server_ClientConnected);

@@ -1,47 +1,50 @@
-﻿namespace csharpsocketsclient
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace csharpsocketsclient
 {
+
     using System;
+    using System.Windows.Forms;
+    using System.Messaging;
     using System.Net;
     using System.Net.Sockets;
-    using System.Windows.Forms;
 
     public class SocketClient
     {
-        private int cServerPort = 9898;
-        private string cServerAddress = "localhost";
 
-        private System.Net.Sockets.Socket cClientSocket;
-        private SocketGlobals.MessageQueue cSendQueue = new SocketGlobals.MessageQueue();
+        int cServerPort = 9898;
+        string cServerAddress = "localhost";
+
+        System.Net.Sockets.Socket cClientSocket;
+        SocketGlobals.MessageQueue cSendQueue = new SocketGlobals.MessageQueue();
 
         public event MessageSentToServerEventHandler MessageSentToServer;
-
         public delegate void MessageSentToServerEventHandler(string argCommandString);
 
         public void ConnectToServer()
-        {
-            // create the TcpListener which will listen for and accept new client connections asynchronously
-            cClientSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            // convert the server address and port into an ipendpoint
-            IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);
-            IPEndPoint mEndPoint = null;
+	    {
+		    // create the TcpListener which will listen for and accept new client connections asynchronously
+		    cClientSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		    // convert the server address and port into an ipendpoint
+		    IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);
+		    IPEndPoint mEndPoint = null;
             foreach (IPAddress mHostAddress in mHostAddresses)
             {
-                if (mHostAddress.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    mEndPoint = new IPEndPoint(mHostAddress, cServerPort);
-                }
-            }
-
-            // connect to server async
-            try
-            {
-                cClientSocket.BeginConnect(mEndPoint, new AsyncCallback(ConnectToServerCompleted), new SocketGlobals.AsyncSendState(cClientSocket));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ConnectToServer error: " + ex.Message);
-            }
-        }
+			    if (mHostAddress.AddressFamily == AddressFamily.InterNetwork) {
+				    mEndPoint = new IPEndPoint(mHostAddress, cServerPort);
+			    }
+		    }
+            
+		    // connect to server async
+		    try {
+			    cClientSocket.BeginConnect(mEndPoint, new AsyncCallback(ConnectToServerCompleted), new SocketGlobals.AsyncSendState(cClientSocket));
+		    } catch (Exception ex) {
+			    MessageBox.Show("ConnectToServer error: " + ex.Message);
+		    }
+	    }
 
         public void DisconnectFromServer()
         {
@@ -56,7 +59,7 @@
         public void ConnectToServerCompleted(IAsyncResult ar)
         {
             // get the async state object which was returned by the async beginconnect method
-            SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState)ar.AsyncState;
+            SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState) ar.AsyncState;
 
             // end the async connection request so we can check if we are connected to the server
             try
@@ -81,7 +84,7 @@
         public void ServerMessageReceived(IAsyncResult ar)
         {
             // get the async state object from the async BeginReceive method
-            SocketGlobals.AsyncReceiveState mState = (SocketGlobals.AsyncReceiveState)ar.AsyncState;
+            SocketGlobals.AsyncReceiveState mState = (SocketGlobals.AsyncReceiveState) ar.AsyncState;
             // call EndReceive which will give us the number of bytes received
             int numBytesReceived = 0;
             numBytesReceived = mState.Socket.EndReceive(ar);
@@ -116,7 +119,7 @@
                 // rewind the PacketBufferStream so we can de-serialize it
                 mState.PacketBufferStream.Position = 0;
                 // de-serialize the PacketBufferStream which will give us an actual Packet object
-                mState.Packet = (string)mSerializer.Deserialize(mState.PacketBufferStream);
+                mState.Packet = (string) mSerializer.Deserialize(mState.PacketBufferStream);
                 // parse the complete message that was received from the server
                 ParseReceivedServerMessage(mState.Packet, mState.Socket);
                 // call BeginReceive again, so we can start receiving another packet from this client socket
@@ -167,6 +170,7 @@
             System.Buffer.BlockCopy(mPacketBytes, 0, mState.BytesToSend, mSizeBytes.Length, mPacketBytes.Length);
 
             cClientSocket.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
+
         }
 
         ///' <summary>
@@ -185,7 +189,7 @@
             if (cSendQueue.Processing == false)
             {
                 // process the top message in the queue, which in turn will process all other messages until the queue is empty
-                SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState)cSendQueue.Messages.Dequeue();
+                SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState) cSendQueue.Messages.Dequeue();
                 // we must send the correct number of bytes, which must not be greater than the remaining bytes
                 cClientSocket.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
             }
@@ -194,7 +198,7 @@
         public void MessagePartSent(IAsyncResult ar)
         {
             // get the async state object which was returned by the async beginsend method
-            SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState)ar.AsyncState;
+            SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState) ar.AsyncState;
             try
             {
                 int numBytesSent = 0;
@@ -217,5 +221,6 @@
                 MessageBox.Show("DataSent error: " + ex.Message);
             }
         }
+
     }
 }

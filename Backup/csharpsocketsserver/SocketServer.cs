@@ -1,31 +1,34 @@
-﻿namespace csharpsocketsserver
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace csharpsocketsserver
 {
+
     using System;
+    using System.Windows.Forms;
+    using System.Messaging;
     using System.Net;
     using System.Net.Sockets;
-    using System.Windows.Forms;
 
     public class SocketServer
     {
-        private int cServerPort = 9898;
+        
+        int cServerPort = 9898;
 
-        private string cServerAddress = "localhost";
-        private Socket cServerSocket;
-        private bool cStopRequested;
+        string cServerAddress = "localhost";
+        Socket cServerSocket;
+        bool cStopRequested;
 
-        private System.Collections.ArrayList cClients = new System.Collections.ArrayList();
-
+        System.Collections.ArrayList cClients = new System.Collections.ArrayList();
         public event MessageReceivedEventHandler MessageReceived;
-
         public delegate void MessageReceivedEventHandler(string argMessage, Socket argClientSocket);
-
         public event ClientConnectedEventHandler ClientConnected;
-
         public delegate void ClientConnectedEventHandler(Socket argClientSocket);
-
         public event ClientDisconnectedEventHandler ClientDisconnected;
-
         public delegate void ClientDisconnectedEventHandler(Socket argClientSocket);
+
 
         public void InitializeServer()
         {
@@ -36,30 +39,30 @@
         /// </summary>
         /// <remarks></remarks>
         public void StartServer()
-        {
-            // create the TcpListener which will listen for and accept new client connections asynchronously
-            cServerSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+	    {
+		    // create the TcpListener which will listen for and accept new client connections asynchronously
+		    cServerSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            // convert the server address and port into an ipendpoint
-            IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);
-            IPEndPoint mEndPoint = null;
+		    // convert the server address and port into an ipendpoint
+		    IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);
+		    IPEndPoint mEndPoint = null;
             foreach (IPAddress mHostAddress in mHostAddresses)
             {
-                if (mHostAddress.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    mEndPoint = new IPEndPoint(mHostAddress, cServerPort);
-                }
-            }
+			    if (mHostAddress.AddressFamily == AddressFamily.InterNetwork) {
+				    mEndPoint = new IPEndPoint(mHostAddress, cServerPort);
+			    }
+		    }
 
-            // bind to the server's ipendpoint
-            cServerSocket.Bind(mEndPoint);
+		    // bind to the server's ipendpoint
+		    cServerSocket.Bind(mEndPoint);
 
-            // configure the listener to allow 1 incoming connection at a time
-            cServerSocket.Listen(1);
+		    // configure the listener to allow 1 incoming connection at a time
+		    cServerSocket.Listen(1);
 
-            // accept client connection async
-            cServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), cServerSocket);
-        }
+		    // accept client connection async
+		    cServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), cServerSocket);
+
+	    }
 
         public void StopServer()
         {
@@ -76,7 +79,7 @@
         public void ClientAccepted(IAsyncResult ar)
         {
             // get the async state object from the async BeginAccept method, which contains the server's listening socket
-            Socket mServerSocket = (Socket)ar.AsyncState;
+            Socket mServerSocket = (Socket) ar.AsyncState;
             // call EndAccept which will connect the client and give us the the client socket
             Socket mClientSocket = null;
             try
@@ -108,7 +111,7 @@
         public void ClientMessageReceived(IAsyncResult ar)
         {
             // get the async state object from the async BeginReceive method
-            SocketGlobals.AsyncReceiveState mState = (SocketGlobals.AsyncReceiveState)ar.AsyncState;
+            SocketGlobals.AsyncReceiveState mState = (SocketGlobals.AsyncReceiveState) ar.AsyncState;
             // call EndReceive which will give us the number of bytes received
             int numBytesReceived = 0;
             try
@@ -167,7 +170,7 @@
                 // rewind the PacketBufferStream so we can de-serialize it
                 mState.PacketBufferStream.Position = 0;
                 // de-serialize the PacketBufferStream which will give us an actual Packet object
-                mState.Packet = (string)mSerializer.Deserialize(mState.PacketBufferStream);
+                mState.Packet = (string) mSerializer.Deserialize(mState.PacketBufferStream);
                 // handle the message
                 ParseReceivedClientMessage(mState.Packet, mState.Socket);
                 // call BeginReceive again, so we can start receiving another packet from this client socket
@@ -176,6 +179,7 @@
                 mNextState.Socket.BeginReceive(mNextState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mNextState);
             }
         }
+
 
         public void ParseReceivedClientMessage(string argCommandString, Socket argClient)
         {
@@ -249,12 +253,14 @@
 
             // queue the Message
             argClient.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
+
         }
+
 
         public void MessagePartSent(IAsyncResult ar)
         {
             // get the async state object which was returned by the async beginsend method
-            SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState)ar.AsyncState;
+            SocketGlobals.AsyncSendState mState = (SocketGlobals.AsyncSendState) ar.AsyncState;
 
             try
             {
@@ -274,11 +280,14 @@
                 }
 
                 // at this point, the EndSend succeeded and we are ready to send something else!
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("DataSent error: " + ex.Message);
             }
         }
+
     }
+
 }

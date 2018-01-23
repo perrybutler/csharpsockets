@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharpsocketsclient", "csharpsocketsclient\csharpsocketsclient.csproj", "{156C9C21-16D6-4293-8649-DA733494F2B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharpsocketsserver", "csharpsocketsserver\csharpsocketsserver.csproj", "{C90E8F34-E2E4-4DFD-A4A0-95F79E9F6097}"
@@ -30,8 +28,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {538E0A8D-2862-4A87-8598-ABF9579CA4B6}
 	EndGlobalSection
 EndGlobal

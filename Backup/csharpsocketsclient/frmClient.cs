@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace csharpsocketsclient
 {
+    
     public partial class frmClient : Form
     {
-        private SocketClient client = new SocketClient();
+        SocketClient client = new SocketClient();
 
         public frmClient()
         {
