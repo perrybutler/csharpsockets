@@ -38,7 +38,7 @@
         public void StartServer()
         {
             // create the TcpListener which will listen for and accept new client connections asynchronously
-            cServerSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            cServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             // convert the server address and port into an ipendpoint
             IPAddress[] mHostAddresses = Dns.GetHostAddresses(cServerAddress);

@@ -59,5 +59,14 @@ namespace csharpsocketsclient.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus nisl tincidunt eget nullam non. In hendrerit gravida rutrum quisque. Ipsum dolor sit amet consectetur adipiscing elit duis tristique sollicitudin. Nisi lacus sed viverra tellus in hac habitasse. Cras ornare arcu dui vivamus. Ultricies lacus sed turpis tincidunt. Massa massa ultricies mi quis hendrerit dolor. Donec ultrices tincidunt arcu non. Quisque id diam vel quam elementum [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string lorem_ipsum {
+            get {
+                return ResourceManager.GetString("lorem_ipsum", resourceCulture);
+            }
+        }
     }
 }

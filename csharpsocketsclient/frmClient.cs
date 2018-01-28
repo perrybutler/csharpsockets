@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace csharpsocketsclient
@@ -6,6 +8,7 @@ namespace csharpsocketsclient
     public partial class frmClient : Form
     {
         private SocketClient client = new SocketClient();
+        private string loremIpsum;
 
         public frmClient()
         {
@@ -40,7 +43,7 @@ namespace csharpsocketsclient
 
         private void sendMessage()
         {
-            client.SendMessageToServer("/say " + txtSend.Text);
+            client.SendMessageToServer("/say " + Properties.Resources.lorem_ipsum);
         }
 
         private void txtSend_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
