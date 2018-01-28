@@ -1,0 +1,5 @@
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsglobals\bin\Release\dotnetsocketsglobals.dll
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsglobals\bin\Release\dotnetsocketsglobals.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsglobals\obj\Release\csharpsocketsglobals.csproj.CoreCompileInputs.cache
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsglobals\obj\Release\dotnetsocketsglobals.dll
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsglobals\obj\Release\dotnetsocketsglobals.pdb

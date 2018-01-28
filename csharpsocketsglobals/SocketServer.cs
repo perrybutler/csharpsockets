@@ -1,9 +1,8 @@
-﻿namespace csharpsocketsserver
+﻿namespace ProjectSockets
 {
     using System;
     using System.Net;
     using System.Net.Sockets;
-    using System.Windows.Forms;
 
     public class SocketServer
     {
@@ -179,7 +178,7 @@
 
         public void ParseReceivedClientMessage(string argCommandString, Socket argClient)
         {
-            Console.WriteLine("ParseReceivedClientMessage: " + argCommandString);
+            //Console.WriteLine("ParseReceivedClientMessage: " + argCommandString);
 
             // parse the command string
             string argCommand = null;
@@ -277,7 +276,7 @@
             }
             catch (Exception ex)
             {
-                MessageBox.Show("DataSent error: " + ex.Message);
+                Console.WriteLine("DataSent error: " + ex.Message);
             }
         }
     }

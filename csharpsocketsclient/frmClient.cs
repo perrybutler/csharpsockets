@@ -1,6 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using ProjectSockets;
+using System;
 using System.Windows.Forms;
 
 namespace csharpsocketsclient
@@ -8,7 +7,6 @@ namespace csharpsocketsclient
     public partial class frmClient : Form
     {
         private SocketClient client = new SocketClient();
-        private string loremIpsum;
 
         public frmClient()
         {

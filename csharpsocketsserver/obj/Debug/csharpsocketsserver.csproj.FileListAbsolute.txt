@@ -14,6 +14,7 @@ C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\cs
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb
 C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
 C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.exe.config
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.exe
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.pdb
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\dotnetsocketsglobals.dll
@@ -25,4 +26,3 @@ D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\De
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csproj.CoreCompileInputs.cache
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb
-D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.exe.config

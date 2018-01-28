@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 namespace csharpsocketsserver
 {
+    using ProjectSockets;
     using System.Net.Sockets;
 
     internal delegate void MessageReceivedDelegate(string argMessage, Socket argClientSocket);
