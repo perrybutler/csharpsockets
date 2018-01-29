@@ -233,11 +233,15 @@
 
             // serialize the Packet into a stream of bytes which is suitable for sending with the Socket
             System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            System.IO.MemoryStream mSerializerStream = new System.IO.MemoryStream();
-            mSerializer.Serialize(mSerializerStream, mPacket);
 
-            // get the serialized Packet bytes
-            byte[] mPacketBytes = mSerializerStream.GetBuffer();
+            byte[] mPacketBytes = null;
+            using (System.IO.MemoryStream mSerializerStream = new System.IO.MemoryStream())
+            {
+                mSerializer.Serialize(mSerializerStream, mPacket);
+
+                // get the serialized Packet bytes
+                mPacketBytes = mSerializerStream.GetBuffer();
+            }
 
             // convert the size into a byte array
             byte[] mSizeBytes = BitConverter.GetBytes(mPacketBytes.Length + 4);
