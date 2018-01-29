@@ -124,8 +124,10 @@ namespace ProjectSockets
                     // parse the complete message that was received from the server
                     ParseReceivedServerMessage(mState.Packet, mState.Socket);
 
-                    mState.PacketBufferStream.Close();
-                    mState.PacketBufferStream.Dispose();
+                    //GC.Collect();
+
+                    //mState.PacketBufferStream.Close();
+                    //mState.PacketBufferStream.Dispose();
 
                     // call BeginReceive again, so we can start receiving another packet from this client socket
                     SocketGlobals.AsyncReceiveState mNextState = new SocketGlobals.AsyncReceiveState();

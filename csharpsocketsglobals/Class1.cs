@@ -1,7 +1,10 @@
-﻿public static class SocketGlobals
+﻿using System;
+
+public static class SocketGlobals
 {
     public static int gBufferSize = 1024;
 
+    [Serializable]
     public class AsyncReceiveState
     {
         public System.Net.Sockets.Socket Socket;
@@ -17,6 +20,38 @@
 
         // the total bytes received for the Packet so far
         public int TotalBytesReceived;
+
+        [NonSerialized]
+        private bool disposed;
+
+        ~AsyncReceiveState()
+        {
+            Console.WriteLine("Calling Destructor");
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            //GC.SuppressFinalize(this);
+        }
+
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                PacketBufferStream.Close();
+                PacketBufferStream.Dispose();
+            }
+
+            // Free any unmanaged objects here.
+            //
+            disposed = true;
+        }
     }
 
     public class AsyncSendState
