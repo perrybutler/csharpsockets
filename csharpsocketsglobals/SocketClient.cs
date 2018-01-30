@@ -324,6 +324,12 @@ namespace DeltaSockets
                 //AsyncReceiveState mNextState = new AsyncReceiveState();
                 //mNextState.Socket = mState.Socket; //Idk, why this new instance ???
 
+                //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien los disposes
+
+                //Console.WriteLine("Client ServerMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
+
+                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
+
                 Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD x?x?
                 co.rState.ReceiveSize = 0;
                 co.rState.Packet = null;
@@ -331,12 +337,6 @@ namespace DeltaSockets
                 co.rState._packetBuff.Close();
                 co.rState._packetBuff.Dispose();
                 co.rState._packetBuff = new MemoryStream();
-
-                //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien los disposes
-
-                //Console.WriteLine("Client ServerMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
-
-                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
             }
         }
 

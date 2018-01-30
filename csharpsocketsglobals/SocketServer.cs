@@ -323,6 +323,10 @@ namespace DeltaSockets
 
                 // ???
 
+                Console.WriteLine("Server ClientMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
+
+                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), co);
+
                 Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); // x?x?
                 co.rState.ReceiveSize = 0;
                 co.rState.Packet = null;
@@ -330,10 +334,6 @@ namespace DeltaSockets
                 co.rState._packetBuff.Close();
                 co.rState._packetBuff.Dispose();
                 co.rState._packetBuff = new MemoryStream();
-
-                Console.WriteLine("Server ClientMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
-
-                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), co);
 
                 //mState.Socket.Dispose(); // x?x?
                 //mState = null;
