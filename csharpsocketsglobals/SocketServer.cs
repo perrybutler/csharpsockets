@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using static DeltaSockets.SocketGlobals;
@@ -298,6 +299,8 @@ namespace DeltaSockets
             // bytesReceived = Carcassonne.Library.PacketBufferSize Then
             if (co.rState.TotalBytesReceived < co.rState.ReceiveSize)
             {
+                //File.AppendAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "serverAppend.txt"), string.Join(" ", co.rState.Buffer.Select(x => x.ToString())) + " ");
+
                 // ## STILL MORE DATA FOR THIS PACKET, CONTINUE RECEIVING ##
                 // the TotalBytesReceived is less than the ReceiveSize so we need to continue receiving more data for this packet
                 co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), co);
@@ -319,9 +322,6 @@ namespace DeltaSockets
                 //mNextState.Socket = mState.Socket;
 
                 // ???
-                //mState.PacketBufferStream.Close();
-                //mState.PacketBufferStream.Dispose();
-                //mState.PacketBufferStream = null;
 
                 Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); // x?x?
                 co.rState.ReceiveSize = 0;
@@ -330,10 +330,6 @@ namespace DeltaSockets
                 co.rState._packetBuff.Close();
                 co.rState._packetBuff.Dispose();
                 co.rState._packetBuff = new MemoryStream();
-
-                //co.rState.Buffer = new byte[co.rState.Buffer.Length];
-
-                //
 
                 Console.WriteLine("Server ClientMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 

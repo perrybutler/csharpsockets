@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using static DeltaSockets.SocketGlobals;
 
 namespace DeltaSockets
@@ -309,7 +312,7 @@ namespace DeltaSockets
             {
                 // ## FINAL DATA RECEIVED, PARSE AND PROCESS THE PACKET ##
                 // the TotalBytesReceived is equal to the ReceiveSize, so we are done receiving this Packet...parse it!
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                BinaryFormatter mSerializer = new BinaryFormatter();
                 // rewind the PacketBufferStream so we can de-serialize it
                 co.rState.PacketBufferStream.Position = 0;
                 // de-serialize the PacketBufferStream which will give us an actual Packet object
@@ -321,10 +324,6 @@ namespace DeltaSockets
                 //AsyncReceiveState mNextState = new AsyncReceiveState();
                 //mNextState.Socket = mState.Socket; //Idk, why this new instance ???
 
-                //co.rState.PacketBufferStream.Close();
-                //co.mState.PacketBufferStream.Dispose();
-                //mState.PacketBufferStream = null;
-
                 Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD x?x?
                 co.rState.ReceiveSize = 0;
                 co.rState.Packet = null;
@@ -333,15 +332,11 @@ namespace DeltaSockets
                 co.rState._packetBuff.Dispose();
                 co.rState._packetBuff = new MemoryStream();
 
-                //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien
-                //los disposes
+                //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien los disposes
 
                 //Console.WriteLine("Client ServerMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
                 co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
-
-                //mState.Socket.Dispose(); // x?x? s
-                //mState = null;
             }
         }
 
@@ -391,6 +386,8 @@ namespace DeltaSockets
                 Array.Clear(mPacketBytes, 0, mPacketBytes.Length);
 
                 Console.WriteLine("Ready to send a object of {0} bytes length", co.sState.BytesToSend.Length);
+
+                //File.WriteAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "clientWrite.txt"), string.Join(" ", co.sState.BytesToSend.Select(x => x.ToString())));
 
                 co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co);
 
