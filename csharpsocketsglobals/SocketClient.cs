@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using static DeltaSockets.SocketGlobals;
@@ -323,9 +324,14 @@ namespace DeltaSockets
                 //co.rState.PacketBufferStream.Close();
                 //co.mState.PacketBufferStream.Dispose();
                 //mState.PacketBufferStream = null;
-                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD
 
+                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD x?x?
                 co.rState.ReceiveSize = 0;
+                co.rState.Packet = null;
+                co.rState.TotalBytesReceived = 0;
+                co.rState._packetBuff.Close();
+                co.rState._packetBuff.Dispose();
+                co.rState._packetBuff = new MemoryStream();
 
                 //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien
                 //los disposes

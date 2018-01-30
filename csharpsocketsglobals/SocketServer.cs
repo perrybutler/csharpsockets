@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -229,13 +230,13 @@ namespace DeltaSockets
             if (!routingTable.ContainsKey(genID))
                 routingTable.Add(genID, co);
             else
-                Console.WriteLine("Overlapping id error!");
+                Console.WriteLine("Overlapping ID error!");
 
             //We don't have a way to know if there was a problem in the transmission ???
-            SendToClient(SocketManager.ReturnClientIDAfterAccept(genID), co);
-            ClientConnected?.Invoke(co);
+            SendToClient(SocketManager.ReturnClientIDAfterAccept(genID), routingTable[genID]);
+            ClientConnected?.Invoke(routingTable[genID]);
 
-            co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), co); //ClientMessageReceived
+            routingTable[genID].Socket.BeginReceive(routingTable[genID].rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), routingTable[genID]); //ClientMessageReceived
             // begin accepting another client connection
             mServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), mServerSocket);
 
@@ -321,9 +322,18 @@ namespace DeltaSockets
                 //mState.PacketBufferStream.Close();
                 //mState.PacketBufferStream.Dispose();
                 //mState.PacketBufferStream = null;
-                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length);
 
+                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); // x?x?
                 co.rState.ReceiveSize = 0;
+                co.rState.Packet = null;
+                co.rState.TotalBytesReceived = 0;
+                co.rState._packetBuff.Close();
+                co.rState._packetBuff.Dispose();
+                co.rState._packetBuff = new MemoryStream();
+
+                //co.rState.Buffer = new byte[co.rState.Buffer.Length];
+
+                //
 
                 Console.WriteLine("Server ClientMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
