@@ -27,15 +27,18 @@ namespace DeltaSockets
         //Conn,
         ReturnClientIDAfterAccept,
 
-        ConfirmConnId,
+        //AddToServerRoutingTable,
+
+        //ConfirmConnId,
         CloseClients,
+
         ClosedClient,
         Stop,
         UnpoliteStop,
         CustomCommand,
 
         //Client
-        CreateConnId,
+        //CreateConnId,
 
         CloseInstance
     }
@@ -50,14 +53,21 @@ namespace DeltaSockets
             public AsyncSendState sState = new AsyncSendState();
 
             public Socket Socket;
+            public ulong myID;
 
             private SocketContainer()
             {
             }
 
-            public SocketContainer(Socket argSocket)
+            /*public SocketContainer(Socket argSocket)
             {
                 Socket = argSocket;
+            }*/
+
+            public SocketContainer(ulong id, Socket socket)
+            {
+                myID = id;
+                Socket = socket;
             }
         }
 
@@ -92,6 +102,12 @@ namespace DeltaSockets
 
             // the total bytes received for the Packet so far
             public int TotalBytesReceived;
+
+            ~AsyncReceiveState()
+            {
+                Console.WriteLine("Calling Receive Destructor");
+                Dispose();
+            }
 
             // Public implementation of Dispose pattern callable by consumers.
             public void Dispose()
@@ -134,6 +150,12 @@ namespace DeltaSockets
             {
                 Socket = argSocket;
             }*/
+
+            ~AsyncSendState()
+            {
+                Console.WriteLine("Calling Send Destructor");
+                Dispose();
+            }
 
             public int NextOffset()
             {
@@ -222,20 +244,19 @@ namespace DeltaSockets
 
             //Server actions that doesn't need to be sended to the other clients and maybe that need also any origin id
 
-            public static object SendConnId(ulong clientId)
+            /*public static object SendConnId(ulong clientId)
             {
                 return SendCommand(SocketCommands.CreateConnId, clientId);
+            }*/
+
+            public static object ReturnClientIDAfterAccept(ulong id)
+            {
+                return SendCommand(SocketCommands.ReturnClientIDAfterAccept, id);
             }
 
-            public static object ConfirmConnId(ulong id)
+            /*public static object AddToServerRoutingTable(ulong id)
             {
-                return SendCommand(SocketCommands.ConfirmConnId, id);
-            }
-
-            //Id is obtained later
-            /*public static object ManagedConn()
-            {
-                return SendCommand(SocketCommands.Conn);
+                return SendCommand(SocketCommands.AddToServerRoutingTable, id);
             }*/
 
             public static object PoliteClose(ulong id = 0)

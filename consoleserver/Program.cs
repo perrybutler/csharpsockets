@@ -1,6 +1,6 @@
 ﻿using DeltaSockets;
 using System;
-using System.Net.Sockets;
+using static DeltaSockets.SocketGlobals;
 
 namespace consoleserver
 {
@@ -15,7 +15,7 @@ namespace consoleserver
             Console.Read();
         }
 
-        private static void server_MessageReceived(string argMessage, Socket argClient)
+        private static void server_MessageReceived(string argMessage, SocketContainer argContainer)
         {
             Console.WriteLine("Received message of {0} bytes length.", argMessage.Length);
         }

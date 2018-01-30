@@ -14,7 +14,7 @@ namespace consoleclient
             do
             {
                 if (client.IsConnected)
-                    client.SendMessageToServer(Properties.Resources.lorem_ipsum);
+                    client.SendMessageToServer(Properties.Resources.lorem_ipsum, client.my);
             } while ((line = Console.ReadLine()) != "exit");
         }
     }

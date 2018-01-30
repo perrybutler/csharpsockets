@@ -161,7 +161,8 @@ namespace DeltaSockets
             IP = ipAddr;
             Port = port;
 
-            my = new SocketContainer(new Socket(ipAddr.AddressFamily, sType, pType)
+            //0 as an ID is not allowed, this is waiting for a ID
+            my = new SocketContainer(0, new Socket(ipAddr.AddressFamily, sType, pType)
             {
                 NoDelay = false
             });
@@ -249,7 +250,8 @@ namespace DeltaSockets
                 // send a welcome message
 
                 IsConnected = true;
-                Send(SocketManager.ManagedConn(), co); // ??? --> el problema estába en que estaba llamado a Socket.Send directamente y estamos dentro de un Socket async xD
+                OnConnectedCallback?.Invoke();
+                //Send(SocketManager.ManagedConn(), co); // ??? --> el problema estába en que estaba llamado a Socket.Send directamente y estamos dentro de un Socket async xD
 
                 // start waiting for messages from the server
                 //AsyncReceiveState mReceiveState = new AsyncReceiveState();
@@ -322,6 +324,8 @@ namespace DeltaSockets
                 //co.mState.PacketBufferStream.Dispose();
                 //mState.PacketBufferStream = null;
                 Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD
+
+                co.rState.ReceiveSize = 0;
 
                 //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien
                 //los disposes
@@ -456,13 +460,13 @@ namespace DeltaSockets
                 {
                     switch (cmd.Command)
                     {
-                        case SocketCommands.CreateConnId:
+                        /*case SocketCommands.CreateConnId:
                             myLogger.Log("Starting new CLIENT connection with ID: {0}", sm.id);
                             Id = sm.id;
 
                             Send(SocketManager.ConfirmConnId(Id), argContainer); //???
                             OnConnectedCallback?.Invoke();
-                            break;
+                            break;*/
 
                         case SocketCommands.CloseInstance:
                             myLogger.Log("Client is closing connection...");

@@ -41,7 +41,7 @@ namespace csharpsocketsclient
 
         private void sendMessage()
         {
-            client.SendMessageToServer("/say " + Properties.Resources.lorem_ipsum);
+            client.SendMessageToServer("/say " + Properties.Resources.lorem_ipsum, client.my);
         }
 
         private void txtSend_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)

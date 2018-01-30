@@ -5,12 +5,13 @@ namespace csharpsocketsserver
 {
     using DeltaSockets;
     using System.Net.Sockets;
+    using static DeltaSockets.SocketGlobals;
 
-    internal delegate void MessageReceivedDelegate(string argMessage, Socket argClientSocket);
+    internal delegate void MessageReceivedDelegate(string argMessage, SocketContainer argContainer);
 
-    internal delegate void ClientConnectedDelegate(Socket argClientSocket);
+    internal delegate void ClientConnectedDelegate(SocketContainer argContainer);
 
-    internal delegate void ClientDisconnectedDelegate(Socket argClientSocket);
+    internal delegate void ClientDisconnectedDelegate(SocketContainer argContainer);
 
     public partial class frmServer : Form
     {
@@ -44,38 +45,38 @@ namespace csharpsocketsserver
             }
         }
 
-        private void server_ClientConnected(Socket argClientSocket)
+        private void server_ClientConnected(SocketContainer argContainer)
         {
-            Invoke(new ClientConnectedDelegate(ClientConnected), argClientSocket);
+            Invoke(new ClientConnectedDelegate(ClientConnected), argContainer);
         }
 
-        private void ClientConnected(Socket argClientSocket)
+        private void ClientConnected(SocketContainer co)
         {
-            listBox1.Items.Add(argClientSocket.RemoteEndPoint);
+            listBox1.Items.Add(co.Socket.RemoteEndPoint);
         }
 
-        private void server_ClientDisconnected(Socket argClientSocket)
+        private void server_ClientDisconnected(SocketContainer argContainer)
         {
-            Invoke(new ClientDisconnectedDelegate(ClientDisconnected), argClientSocket);
+            Invoke(new ClientDisconnectedDelegate(ClientDisconnected), argContainer);
         }
 
-        private void ClientDisconnected(Socket argClientSocket)
+        private void ClientDisconnected(SocketContainer co)
         {
-            listBox1.Items.Remove(argClientSocket.RemoteEndPoint);
+            listBox1.Items.Remove(co.Socket.RemoteEndPoint);
         }
 
-        private void server_MessageReceived(string argMessage, Socket argClient)
+        private void server_MessageReceived(string argMessage, SocketContainer argContainer)
         {
-            Invoke(new MessageReceivedDelegate(MessageReceived), new object[] { argMessage, argClient });
+            Invoke(new MessageReceivedDelegate(MessageReceived), new object[] { argMessage, argContainer });
         }
 
-        private void MessageReceived(string argMessage, Socket argClient)
+        private void MessageReceived(string argMessage, SocketContainer co)
         {
             if (txtReceiveLog.Text != "")
             {
                 txtReceiveLog.Text = Environment.NewLine + txtReceiveLog.Text;
             }
-            txtReceiveLog.Text = argClient.RemoteEndPoint.ToString() + ": " + argMessage + txtReceiveLog.Text;
+            txtReceiveLog.Text = co.Socket.RemoteEndPoint.ToString() + ": " + argMessage + txtReceiveLog.Text;
         }
     }
 }
