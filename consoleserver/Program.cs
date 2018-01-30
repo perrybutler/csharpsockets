@@ -1,4 +1,4 @@
-﻿using ProjectSockets;
+﻿using DeltaSockets;
 using System;
 using System.Net.Sockets;
 
@@ -6,7 +6,7 @@ namespace consoleserver
 {
     internal class Program
     {
-        private static SocketServer server = new SocketServer();
+        private static SocketServer server = new SocketServer(true);
 
         private static void Main(string[] args)
         {

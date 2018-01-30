@@ -26,3 +26,15 @@ D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\De
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csproj.CoreCompileInputs.cache
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
 D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.exe.config
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.exe
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\csharpsocketsserver.pdb
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\dotnetsocketsglobals.dll
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\bin\Debug\dotnetsocketsglobals.pdb
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csprojResolveAssemblyReference.cache
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.frmServer.resources
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.Properties.Resources.resources
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csproj.GenerateResource.Cache
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.csproj.CoreCompileInputs.cache
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.exe
+X:\Visual Studio Projects\csharpsockets\csharpsocketsserver\obj\Debug\csharpsocketsserver.pdb

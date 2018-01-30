@@ -1,4 +1,4 @@
-﻿using ProjectSockets;
+﻿using DeltaSockets;
 using System;
 using System.Windows.Forms;
 
@@ -16,7 +16,7 @@ namespace csharpsocketsclient
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            client.ConnectToServer();
+            client.DoConnection();
             btnConnect.Text = "Disconnect";
         }
 
@@ -24,7 +24,7 @@ namespace csharpsocketsclient
         {
             if (btnConnect.Text == "Connect")
             {
-                client.ConnectToServer();
+                client.DoConnection();
                 btnConnect.Text = "Disconnect";
             }
             else

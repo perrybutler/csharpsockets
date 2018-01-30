@@ -1,4 +1,4 @@
-﻿using ProjectSockets;
+﻿using DeltaSockets;
 using System;
 
 namespace consoleclient
@@ -9,7 +9,7 @@ namespace consoleclient
 
         private static void Main(string[] args)
         {
-            client.ConnectToServer();
+            client.DoConnection();
             string line;
             do
             {

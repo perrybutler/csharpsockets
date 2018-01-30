@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace csharpsocketsserver
 {
-    using ProjectSockets;
+    using DeltaSockets;
     using System.Net.Sockets;
 
     internal delegate void MessageReceivedDelegate(string argMessage, Socket argClientSocket);
@@ -14,7 +14,7 @@ namespace csharpsocketsserver
 
     public partial class frmServer : Form
     {
-        private SocketServer server = new SocketServer();
+        private SocketServer server = new SocketServer(true);
 
         public frmServer()
         {
