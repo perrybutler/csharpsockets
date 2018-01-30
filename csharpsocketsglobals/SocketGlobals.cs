@@ -24,7 +24,8 @@ namespace DeltaSockets
     public enum SocketCommands
     {
         //Server
-        Conn,
+        //Conn,
+        ReturnClientIDAfterAccept,
 
         ConfirmConnId,
         CloseClients,
@@ -232,10 +233,10 @@ namespace DeltaSockets
             }
 
             //Id is obtained later
-            public static object ManagedConn()
+            /*public static object ManagedConn()
             {
                 return SendCommand(SocketCommands.Conn);
-            }
+            }*/
 
             public static object PoliteClose(ulong id = 0)
             {

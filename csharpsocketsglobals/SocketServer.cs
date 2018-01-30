@@ -214,14 +214,33 @@ namespace DeltaSockets
             //??? hay que quitar todo lo de los enums para obtener una ID, directamente dar aquí
             //Tenemos que generar una id asociada a este socket para hacer el socket container
             //Esta en la linea 455 (case SocketCommands.Conn: ...) esto me lo tengo q traer
+            //En el endreceive es donde tengo q decirle al cliente su id
 
             ClientConnected?.Invoke(mClientSocket);
-            mClientSocket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
+            SocketContainer co = new SocketContainer(mClientSocket);
+
+            mClientSocket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(AssignIDToClient), co); //ClientMessageReceived
             // begin accepting another client connection
             mServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), mServerSocket);
 
             //mServerSocket.Dispose(); // x?x?
             //Console.WriteLine("Server ClientAccepted => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
+        }
+
+        //Aqui tengo que intercalar una funcion
+
+        public void AssignIDToClient(IAsyncResult ar)
+        {
+            //Tengo que añadir el container al routing table
+            SocketContainer co = ar.AsyncState.CastType<SocketContainer>();
+            ulong genID = 1;
+
+            //Give id in a range...
+            bool b = routingTable.Keys.FindFirstMissingNumberFromSequence(out genID, new MinMax<ulong>(1, (ulong)routingTable.Count));
+            myLogger.Log("Adding #{0} client to routing table!", genID); //Esto ni parece funcionar bien
+
+            SendToClient(SocketManager.SendConnId(genID), handler);
+            //Aqui tengo que hacer un receive, con callback == ClientMessageReceived
         }
 
         /// <summary>
