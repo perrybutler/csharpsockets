@@ -42,6 +42,8 @@ namespace DeltaSockets
         public Action<object, Socket> ReceivedServerMessageCallback;
         public Action OnConnectedCallback;
 
+        private MessageQueue cSendQueue = new MessageQueue();
+
         #endregion "Fields"
 
         #region "Properties"
@@ -146,6 +148,8 @@ namespace DeltaSockets
         public SocketClient(IPAddress ipAddr, ushort port, SocketType sType, ProtocolType pType, Action<object, Socket> everyFunc, bool doConnection = false)
         {
             //period = readEvery;
+
+            cSendQueue.MessageQueued += cSendQueue_MessageQueued;
 
             ReceivedServerMessageCallback = everyFunc;
             //TimerCallback timerDelegate = new TimerCallback(Timering);
@@ -252,7 +256,7 @@ namespace DeltaSockets
 
                 Console.WriteLine("Client ConnectedToServer => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
-                mReceiveState.Socket.BeginReceive(mReceiveState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mReceiveState);
+                mReceiveState.Socket.BeginReceive(mReceiveState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mReceiveState);
 
                 //mReceiveState.Socket.Dispose(); // x?x? n
             }
@@ -294,7 +298,7 @@ namespace DeltaSockets
             {
                 // ## STILL MORE DATA FOR THIS PACKET, CONTINUE RECEIVING ##
                 // the TotalBytesReceived is less than the ReceiveSize so we need to continue receiving more data for this packet
-                mState.Socket.BeginReceive(mState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mState);
+                mState.Socket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mState);
             }
             else
             {
@@ -319,7 +323,7 @@ namespace DeltaSockets
 
                 //Console.WriteLine("Client ServerMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
-                mNextState.Socket.BeginReceive(mNextState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mNextState);
+                mNextState.Socket.BeginReceive(mNextState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mNextState);
 
                 //mState.Socket.Dispose(); // x?x? s
                 mState = null;
@@ -410,6 +414,18 @@ namespace DeltaSockets
             catch (Exception ex)
             {
                 myLogger.Log("DataSent error: " + ex.Message);
+            }
+        }
+
+        private void cSendQueue_MessageQueued()
+        {
+            // when a message is queued, we need to check whether or not we are currently processing the queue before allowing the top item in the queue to start sending
+            if (cSendQueue.Processing == false)
+            {
+                // process the top message in the queue, which in turn will process all other messages until the queue is empty
+                AsyncSendState mState = (AsyncSendState)cSendQueue.Messages.Dequeue();
+                // we must send the correct number of bytes, which must not be greater than the remaining bytes
+                ClientSocket.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
             }
         }
 

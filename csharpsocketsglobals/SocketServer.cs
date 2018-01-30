@@ -107,7 +107,7 @@ namespace DeltaSockets
 
         #endregion "Propierties"
 
-        #region "Socket Constructors"
+        #region "Constructors"
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketServer"/> class.
@@ -115,7 +115,7 @@ namespace DeltaSockets
         /// <param name="debug">if set to <c>true</c> [debug].</param>
         /// <param name="doConnection">if set to <c>true</c> [do connection].</param>
         public SocketServer(bool debug, bool doConnection = false) :
-            this(new SocketPermission(NetworkAccess.Accept, TransportType.Tcp, "", SocketPermission.AllPorts), Dns.GetHostEntry("").AddressList[0], DefPort, SocketType.Stream, ProtocolType.Tcp, debug, doConnection)
+            this(new SocketPermission(NetworkAccess.Accept, TransportType.Tcp, "", SocketPermission.AllPorts), IPAddress.Loopback, DefPort, SocketType.Stream, ProtocolType.Tcp, debug, doConnection)
         { }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace DeltaSockets
                 StartServer(); // ??? --> ComeAlive
         }
 
-        #endregion "Socket Constructors"
+        #endregion "Constructors"
 
         #region "Socket Methods"
 
@@ -211,7 +211,7 @@ namespace DeltaSockets
             AsyncReceiveState mState = new AsyncReceiveState();
             mState.Socket = mClientSocket;
             ClientConnected?.Invoke(mState.Socket);
-            mState.Socket.BeginReceive(mState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
+            mState.Socket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
             // begin accepting another client connection
             mServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), mServerSocket);
 
@@ -273,7 +273,7 @@ namespace DeltaSockets
             {
                 // ## STILL MORE DATA FOR THIS PACKET, CONTINUE RECEIVING ##
                 // the TotalBytesReceived is less than the ReceiveSize so we need to continue receiving more data for this packet
-                mState.Socket.BeginReceive(mState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
+                mState.Socket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
             }
             else
             {
@@ -299,7 +299,7 @@ namespace DeltaSockets
 
                 Console.WriteLine("Server ClientMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
-                mNextState.Socket.BeginReceive(mNextState.Buffer, 0, SocketGlobals.gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mNextState);
+                mNextState.Socket.BeginReceive(mNextState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mNextState);
 
                 //mState.Socket.Dispose(); // x?x?
                 mState = null;
@@ -312,7 +312,9 @@ namespace DeltaSockets
             if (obj is string)
             {
                 string argCommandString = (string)obj;
-                myLogger.Log("ParseReceivedClientMessage: " + argCommandString);
+
+                myLogger.Log("");
+                //myLogger.Log("ParseReceivedClientMessage: " + argCommandString);
 
                 // parse the command string
                 string argCommand = null;

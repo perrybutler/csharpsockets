@@ -41,6 +41,12 @@ namespace DeltaSockets
     {
         public const int gBufferSize = 1024;
 
+        public class SocketContainer
+        {
+            public AsyncReceiveState rState;
+            public AsyncSendState sState;
+        }
+
         public class AsyncReceiveState : IDisposable
         {
             public System.Net.Sockets.Socket Socket;
