@@ -86,10 +86,5 @@ namespace DeltaSockets
         {
             DestsId = ids;
         }
-
-        public T TryGetObject<T>()
-        {
-            return (T)msg;
-        }
     }
 }

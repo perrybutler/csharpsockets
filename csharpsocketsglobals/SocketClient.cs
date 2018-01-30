@@ -20,7 +20,8 @@ namespace DeltaSockets
         /// <summary>
         /// The client socket
         /// </summary>
-        public Socket ClientSocket;
+        //public Socket ClientSocket;
+        public SocketContainer my;
 
         /// <summary>
         /// The ip
@@ -39,7 +40,7 @@ namespace DeltaSockets
 
         //private StateObject stateObject = new StateObject();
 
-        public Action<object, Socket> ReceivedServerMessageCallback;
+        public Action<object, SocketContainer> ReceivedServerMessageCallback;
         public Action OnConnectedCallback;
 
         private MessageQueue cSendQueue = new MessageQueue();
@@ -101,7 +102,7 @@ namespace DeltaSockets
         /// </summary>
         /// <param name="everyFunc">The every function.</param>
         /// <param name="doConnection">if set to <c>true</c> [do connection].</param>
-        public SocketClient(Action<object, Socket> everyFunc, bool doConnection = false) :
+        public SocketClient(Action<object, SocketContainer> everyFunc, bool doConnection = false) :
             this(IPAddress.Loopback, SocketServer.DefPort, SocketType.Stream, ProtocolType.Tcp, everyFunc, doConnection)
         { }
 
@@ -119,7 +120,7 @@ namespace DeltaSockets
             this(ip, port, SocketType.Stream, ProtocolType.Tcp, null, doConnection)
         { }
 
-        public SocketClient(IPAddress ip, ushort port, Action<object, Socket> everyFunc, bool doConnection = false) :
+        public SocketClient(IPAddress ip, ushort port, Action<object, SocketContainer> everyFunc, bool doConnection = false) :
             this(ip, port, SocketType.Stream, ProtocolType.Tcp, everyFunc, doConnection)
         { }
 
@@ -131,7 +132,7 @@ namespace DeltaSockets
         /// <param name="readEvery">The read every.</param>
         /// <param name="everyFunc">The every function.</param>
         /// <param name="doConnection">if set to <c>true</c> [do connection].</param>
-        public SocketClient(string ip, ushort port, Action<object, Socket> everyFunc, bool doConnection = false) :
+        public SocketClient(string ip, ushort port, Action<object, SocketContainer> everyFunc, bool doConnection = false) :
             this(IPAddress.Parse(ip), port, SocketType.Stream, ProtocolType.Tcp, everyFunc, doConnection)
         { }
 
@@ -145,7 +146,7 @@ namespace DeltaSockets
         /// <param name="readEvery">The read every.</param>
         /// <param name="everyFunc">The every function.</param>
         /// <param name="doConnection">if set to <c>true</c> [do connection].</param>
-        public SocketClient(IPAddress ipAddr, ushort port, SocketType sType, ProtocolType pType, Action<object, Socket> everyFunc, bool doConnection = false)
+        public SocketClient(IPAddress ipAddr, ushort port, SocketType sType, ProtocolType pType, Action<object, SocketContainer> everyFunc, bool doConnection = false)
         {
             //period = readEvery;
 
@@ -160,10 +161,10 @@ namespace DeltaSockets
             IP = ipAddr;
             Port = port;
 
-            ClientSocket = new Socket(ipAddr.AddressFamily, sType, pType)
+            my = new SocketContainer(new Socket(ipAddr.AddressFamily, sType, pType)
             {
                 NoDelay = false
-            };
+            });
 
             if (doConnection)
                 DoConnection();
@@ -215,7 +216,7 @@ namespace DeltaSockets
             // connect to server async
             try
             {
-                ClientSocket.BeginConnect(IPEnd, new AsyncCallback(ConnectToServerCompleted), new AsyncSendState(ClientSocket));
+                my.Socket.BeginConnect(IPEnd, new AsyncCallback(ConnectToServerCompleted), my);
             }
             catch (Exception ex)
             {
@@ -225,7 +226,7 @@ namespace DeltaSockets
 
         public void DisconnectFromServer()
         {
-            ClientSocket.Disconnect(false);
+            my.Socket.Disconnect(false);
         }
 
         /// <summary>
@@ -236,27 +237,27 @@ namespace DeltaSockets
         public void ConnectToServerCompleted(IAsyncResult ar)
         {
             // get the async state object which was returned by the async beginconnect method
-            AsyncSendState mState = (AsyncSendState)ar.AsyncState;
+            SocketContainer co = ar.AsyncState.CastType<SocketContainer>();
 
             // end the async connection request so we can check if we are connected to the server
             try
             {
                 // call the EndConnect method which will succeed or throw an error depending on the result of the connection
-                mState.Socket.EndConnect(ar);
+                co.Socket.EndConnect(ar); //Send
 
                 // at this point, the EndConnect succeeded and we are connected to the server!
                 // send a welcome message
 
                 IsConnected = true;
-                Send(SocketManager.ManagedConn()); // ??? --> el problema estába en que estaba llamado a Socket.Send directamente y estamos dentro de un Socket async xD
+                Send(SocketManager.ManagedConn(), co); // ??? --> el problema estába en que estaba llamado a Socket.Send directamente y estamos dentro de un Socket async xD
 
                 // start waiting for messages from the server
-                AsyncReceiveState mReceiveState = new AsyncReceiveState();
-                mReceiveState.Socket = mState.Socket;
+                //AsyncReceiveState mReceiveState = new AsyncReceiveState();
+                //mReceiveState.Socket = mState.Socket;
 
                 Console.WriteLine("Client ConnectedToServer => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
-                mReceiveState.Socket.BeginReceive(mReceiveState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mReceiveState);
+                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
 
                 //mReceiveState.Socket.Dispose(); // x?x? n
             }
@@ -270,35 +271,36 @@ namespace DeltaSockets
         public void ServerMessageReceived(IAsyncResult ar)
         {
             // get the async state object from the async BeginReceive method
-            AsyncReceiveState mState = (AsyncReceiveState)ar.AsyncState;
+            //AsyncReceiveState mState = (AsyncReceiveState)ar.AsyncState;
+            SocketContainer co = ar.AsyncState.CastType<SocketContainer>();
 
             // call EndReceive which will give us the number of bytes received
             int numBytesReceived = 0;
-            numBytesReceived = mState.Socket.EndReceive(ar);
+            numBytesReceived = co.Socket.EndReceive(ar);
 
             // determine if this is the first data received
-            if (mState.ReceiveSize == 0)
+            if (co.rState.ReceiveSize == 0)
             {
                 // this is the first data recieved, so parse the receive size which is encoded in the first four bytes of the buffer
-                mState.ReceiveSize = BitConverter.ToInt32(mState.Buffer, 0);
+                co.rState.ReceiveSize = BitConverter.ToInt32(co.rState.Buffer, 0);
                 // write the received bytes thus far to the packet data stream
-                mState.PacketBufferStream.Write(mState.Buffer, 4, numBytesReceived - 4);
+                co.rState.PacketBufferStream.Write(co.rState.Buffer, 4, numBytesReceived - 4);
             }
             else
             {
                 // write the received bytes thus far to the packet data stream
-                mState.PacketBufferStream.Write(mState.Buffer, 0, numBytesReceived);
+                co.rState.PacketBufferStream.Write(co.rState.Buffer, 0, numBytesReceived);
             }
 
             // increment the total bytes received so far on the state object
-            mState.TotalBytesReceived += numBytesReceived;
+            co.rState.TotalBytesReceived += numBytesReceived;
             // check for the end of the packet
             // bytesReceived = Carcassonne.Library.PacketBufferSize Then
-            if (mState.TotalBytesReceived < mState.ReceiveSize)
+            if (co.rState.TotalBytesReceived < co.rState.ReceiveSize)
             {
                 // ## STILL MORE DATA FOR THIS PACKET, CONTINUE RECEIVING ##
                 // the TotalBytesReceived is less than the ReceiveSize so we need to continue receiving more data for this packet
-                mState.Socket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mState);
+                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
             }
             else
             {
@@ -306,41 +308,44 @@ namespace DeltaSockets
                 // the TotalBytesReceived is equal to the ReceiveSize, so we are done receiving this Packet...parse it!
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
                 // rewind the PacketBufferStream so we can de-serialize it
-                mState.PacketBufferStream.Position = 0;
+                co.rState.PacketBufferStream.Position = 0;
                 // de-serialize the PacketBufferStream which will give us an actual Packet object
-                mState.Packet = mSerializer.Deserialize(mState.PacketBufferStream);
+                co.rState.Packet = mSerializer.Deserialize(co.rState.PacketBufferStream);
                 // parse the complete message that was received from the server
-                ParseReceivedServerMessage(mState.Packet, mState.Socket);
-                // call BeginReceive again, so we can start receiving another packet from this client socket
-                AsyncReceiveState mNextState = new AsyncReceiveState();
-                mNextState.Socket = mState.Socket;
+                ParseReceivedServerMessage(co.rState.Packet, co);
 
-                // ???
-                mState.PacketBufferStream.Close();
-                mState.PacketBufferStream.Dispose();
-                mState.PacketBufferStream = null;
-                Array.Clear(mState.Buffer, 0, mState.Buffer.Length);
+                // call BeginReceive again, so we can start receiving another packet from this client socket
+                //AsyncReceiveState mNextState = new AsyncReceiveState();
+                //mNextState.Socket = mState.Socket; //Idk, why this new instance ???
+
+                //co.rState.PacketBufferStream.Close();
+                //co.mState.PacketBufferStream.Dispose();
+                //mState.PacketBufferStream = null;
+                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD
+
+                //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien
+                //los disposes
 
                 //Console.WriteLine("Client ServerMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
-                mNextState.Socket.BeginReceive(mNextState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), mNextState);
+                co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
 
                 //mState.Socket.Dispose(); // x?x? s
-                mState = null;
+                //mState = null;
             }
         }
 
-        public void ParseReceivedServerMessage(object obj, Socket argClient)
+        public void ParseReceivedServerMessage(object obj, SocketContainer argContainer)
         {
             Console.WriteLine("Received object of type: {0}", obj.GetType().Name);
 
             if (obj is string)
                 myLogger.Log((string)obj);
             else if (obj is SocketMessage)
-                HandleAction((SocketMessage)obj, argClient);
+                HandleAction((SocketMessage)obj, argContainer);
         }
 
-        public void Send(object obj)
+        public void Send(object obj, SocketContainer co)
         {
             // serialize the Packet into a stream of bytes which is suitable for sending with the Socket
             System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -355,46 +360,52 @@ namespace DeltaSockets
                 byte[] mSizeBytes = BitConverter.GetBytes(mPacketBytes.Length + 4);
 
                 // create the async state object which we can pass between async methods
-                AsyncSendState mState = new AsyncSendState(ClientSocket);
+                //AsyncSendState mState = new AsyncSendState(ClientSocket);
 
                 // resize the BytesToSend array to fit both the mSizeBytes and the mPacketBytes
                 // ERROR: Not supported in C#: ReDimStatement
-                Array.Resize(ref mState.BytesToSend, mPacketBytes.Length + mSizeBytes.Length);
+
+                if (co.sState.BytesToSend.Length != mPacketBytes.Length + mSizeBytes.Length)
+                    Array.Resize(ref co.sState.BytesToSend, mPacketBytes.Length + mSizeBytes.Length);
 
                 // copy the mSizeBytes and mPacketBytes to the BytesToSend array
-                Buffer.BlockCopy(mSizeBytes, 0, mState.BytesToSend, 0, mSizeBytes.Length);
-                Buffer.BlockCopy(mPacketBytes, 0, mState.BytesToSend, mSizeBytes.Length, mPacketBytes.Length);
+                Buffer.BlockCopy(mSizeBytes, 0, co.sState.BytesToSend, 0, mSizeBytes.Length);
+                Buffer.BlockCopy(mPacketBytes, 0, co.sState.BytesToSend, mSizeBytes.Length, mPacketBytes.Length);
 
                 Array.Clear(mSizeBytes, 0, mSizeBytes.Length);
                 Array.Clear(mPacketBytes, 0, mPacketBytes.Length);
 
-                Console.WriteLine("Ready to send a object of {0} bytes length", mState.BytesToSend.Length);
+                Console.WriteLine("Ready to send a object of {0} bytes length", co.sState.BytesToSend.Length);
 
-                ClientSocket.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
+                co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co.sState);
+
+                Array.Clear(co.sState.BytesToSend, 0, co.sState.BytesToSend.Length); //Reseteamos para la siguiente vez
             }
         }
 
-        public void SendMessageToServer(string argCommandString)
+        public void SendMessageToServer(string argCommandString, SocketContainer container)
         {
-            Send(argCommandString);
+            Send(argCommandString, container);
         }
 
         public void MessagePartSent(IAsyncResult ar)
         {
             // get the async state object which was returned by the async beginsend method
-            AsyncSendState mState = (AsyncSendState)ar.AsyncState;
+            //AsyncSendState mState = (AsyncSendState)ar.AsyncState;
+            SocketContainer co = ar.AsyncState.CastType<SocketContainer>();
+
             try
             {
                 int numBytesSent = 0;
                 // call the EndSend method which will succeed or throw an error depending on if we are still connected
-                numBytesSent = mState.Socket.EndSend(ar);
+                numBytesSent = co.Socket.EndSend(ar);
                 // increment the total amount of bytes processed so far
-                mState.Progress += numBytesSent;
+                co.sState.Progress += numBytesSent;
                 // determine if we havent' sent all the data for this Packet yet
-                if (mState.NextLength() > 0)
+                if (co.sState.NextLength() > 0)
                 {
                     // we need to send more data
-                    mState.Socket.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
+                    co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co);
                 }
                 else
                 {
@@ -402,10 +413,10 @@ namespace DeltaSockets
                     //Console.WriteLine("Client MessagePartSent completed. Clearing stuff...");
 
                     //Dispose mState when received completed
-                    Array.Clear(mState.BytesToSend, 0, mState.BytesToSend.Length);
+                    Array.Clear(co.sState.BytesToSend, 0, co.sState.BytesToSend.Length);
 
                     //mState.Socket.Dispose(); // x?x? n
-                    mState = null;
+                    //mState = null;
                 }
                 // at this point, the EndSend succeeded and we are ready to send something else!
                 // TODO: use the queue to determine what message was sent and show it in the local chat buffer
@@ -423,9 +434,11 @@ namespace DeltaSockets
             if (cSendQueue.Processing == false)
             {
                 // process the top message in the queue, which in turn will process all other messages until the queue is empty
-                AsyncSendState mState = (AsyncSendState)cSendQueue.Messages.Dequeue();
+                //AsyncSendState mState = (AsyncSendState)cSendQueue.Messages.Dequeue();
+                SocketContainer co = cSendQueue.Messages.Dequeue().CastType<SocketContainer>();
+
                 // we must send the correct number of bytes, which must not be greater than the remaining bytes
-                ClientSocket.BeginSend(mState.BytesToSend, mState.NextOffset(), mState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), mState);
+                co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co);
             }
         }
 
@@ -433,12 +446,12 @@ namespace DeltaSockets
 
         #region "Class Methods"
 
-        private void HandleAction(SocketMessage sm, Socket argClient)
+        private void HandleAction(SocketMessage sm, SocketContainer argContainer)
         {
             //Before we connect we request an id to the master server...
             if (sm.msg is SocketCommand)
             {
-                SocketCommand cmd = sm.TryGetObject<SocketCommand>();
+                SocketCommand cmd = sm.CastType<SocketCommand>();
                 if (cmd != null)
                 {
                     switch (cmd.Command)
@@ -447,7 +460,7 @@ namespace DeltaSockets
                             myLogger.Log("Starting new CLIENT connection with ID: {0}", sm.id);
                             Id = sm.id;
 
-                            Send(SocketManager.ConfirmConnId(Id)); //???
+                            Send(SocketManager.ConfirmConnId(Id), argContainer); //???
                             OnConnectedCallback?.Invoke();
                             break;
 
@@ -467,7 +480,7 @@ namespace DeltaSockets
                 }
             }
             else
-                ReceivedServerMessageCallback?.Invoke(sm.msg, argClient);
+                ReceivedServerMessageCallback?.Invoke(sm.msg, argContainer);
         }
 
         #region "Error & Close & Stop & Dispose"
@@ -479,12 +492,12 @@ namespace DeltaSockets
                 myLogger.Log("Remember that you're in a Client, you can't only close Both connections or only your connection.");
                 return;
             }
-            if (ClientSocket.Connected)
+            if (my.Socket.Connected)
             {
                 IsConnected = false;
-                ClientSocket.Disconnect(false);
-                if (ClientSocket.Connected)
-                    ClientSocket.Shutdown(soShutdown);
+                my.Socket.Disconnect(false);
+                if (my.Socket.Connected)
+                    my.Socket.Shutdown(soShutdown);
             }
         }
 
@@ -505,7 +518,7 @@ namespace DeltaSockets
 
             if (disposing)
             {
-                Send(SocketManager.ClientClosed(Id));
+                Send(SocketManager.ClientClosed(Id), my);
                 // Free any other managed objects here.
                 //
             }
@@ -531,10 +544,10 @@ namespace DeltaSockets
 
                     if (dis)
                     {
-                        ClientSocket.Close();
-                        ClientSocket.Dispose();
+                        my.Socket.Close();
+                        my.Socket.Dispose();
                     }
-                    else Send(SocketManager.ClientClosed(Id)); //If not disposed then send this
+                    else Send(SocketManager.ClientClosed(Id), my); //If not disposed then send this
                 }
                 catch (Exception ex)
                 {

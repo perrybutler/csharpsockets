@@ -167,9 +167,9 @@ namespace DeltaSockets
                 T op = (dynamic)num - n;
                 if ((dynamic)op > 1)
                 {
-                    int max = op.ConvertValue<int>();
+                    int max = op.ConvertType<int>();
                     for (int l = 1; l < max; ++l)
-                        yield return (dynamic)n + l.ConvertValue<T>();
+                        yield return (dynamic)n + l.ConvertType<T>();
                 }
                 n = (dynamic)num;
             }
@@ -181,9 +181,14 @@ namespace DeltaSockets
         }
 
         //This is necessary because we cannot cast (using C# expression (Type)var, or var as Type) => Errors: CS0077, CS0030, CS0413
-        public static T ConvertValue<T>(this object o) where T : struct
+        public static T ConvertType<T>(this object o) where T : struct
         {
             return (T)Convert.ChangeType(o, typeof(T));
+        }
+
+        public static T CastType<T>(this object o)
+        {
+            return (T)o;
         }
 
         public static bool IsNumericType<T>(this T o)

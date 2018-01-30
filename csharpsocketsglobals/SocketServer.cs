@@ -53,9 +53,9 @@ namespace DeltaSockets
         /// <summary>
         /// The routing table
         /// </summary>
-        public static Dictionary<ulong, Socket> routingTable = new Dictionary<ulong, Socket>(); //With this we can assume that ulong.MaxValue clients can connect to the Socket (2^64 - 1)
+        public static Dictionary<ulong, SocketContainer> routingTable = new Dictionary<ulong, SocketContainer>(); //With this we can assume that ulong.MaxValue clients can connect to the Socket (2^64 - 1)
 
-        public Action<object, Socket> ReceivedClientMessageCallback;
+        public Action<object, SocketContainer> ReceivedClientMessageCallback;
 
         private static bool dispose, debug;
 
@@ -195,7 +195,7 @@ namespace DeltaSockets
         public void ClientAccepted(IAsyncResult ar)
         {
             // get the async state object from the async BeginAccept method, which contains the server's listening socket
-            Socket mServerSocket = (Socket)ar.AsyncState;
+            Socket mServerSocket = ar.AsyncState.CastType<Socket>();
             // call EndAccept which will connect the client and give us the the client socket
             Socket mClientSocket = null;
             try
@@ -208,10 +208,15 @@ namespace DeltaSockets
                 return;
             }
             // instruct the client to begin receiving data
-            AsyncReceiveState mState = new AsyncReceiveState();
-            mState.Socket = mClientSocket;
-            ClientConnected?.Invoke(mState.Socket);
-            mState.Socket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
+            //AsyncReceiveState mState = new AsyncReceiveState();
+            //mState.Socket = mClientSocket;
+
+            //??? hay que quitar todo lo de los enums para obtener una ID, directamente dar aquí
+            //Tenemos que generar una id asociada a este socket para hacer el socket container
+            //Esta en la linea 455 (case SocketCommands.Conn: ...) esto me lo tengo q traer
+
+            ClientConnected?.Invoke(mClientSocket);
+            mClientSocket.BeginReceive(mState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), mState);
             // begin accepting another client connection
             mServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), mServerSocket);
 
@@ -508,7 +513,7 @@ namespace DeltaSockets
             myLogger.Log("");
 
             //Send to the other clients
-            foreach (KeyValuePair<ulong, Socket> soc in routingTable)
+            foreach (KeyValuePair<ulong, SocketContainer> soc in routingTable)
                 if (soc.Key != sm.id)
                     SendToClient(obj == null ? sm : obj, soc.Value); // ??? <-- byteData ??
         }
@@ -530,14 +535,14 @@ namespace DeltaSockets
             {
                 if (dests.First() == ulong.MaxValue)
                 { //Send to all users
-                    foreach (KeyValuePair<ulong, Socket> soc in routingTable)
+                    foreach (KeyValuePair<ulong, SocketContainer> soc in routingTable)
                         if (soc.Key != sm.id)
                             SendToClient(obj == null ? sm : obj, soc.Value);
                 }
             }
             else if (dests.Count() > 1)
             { //Select dictionary keys that contains dests
-                foreach (KeyValuePair<ulong, Socket> soc in routingTable.Where(x => dests.Contains(x.Key)))
+                foreach (KeyValuePair<ulong, SocketContainer> soc in routingTable.Where(x => dests.Contains(x.Key)))
                     if (soc.Key != sm.id)
                         SendToClient(obj == null ? sm : obj, soc.Value);
             }
@@ -563,7 +568,7 @@ namespace DeltaSockets
         {
             if (id > 0) SendToClient(SocketManager.PoliteClose(id), routingTable[id]); //First, close the client that has send make the request...
             myLogger.Log("Closing all {0} clients connected!", routingTable.Count);
-            foreach (KeyValuePair<ulong, Socket> soc in routingTable)
+            foreach (KeyValuePair<ulong, SocketContainer> soc in routingTable)
             {
                 if (soc.Key != id) //Then, close the others one
                 {

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
+using System.Net.Sockets;
 using System.Windows.Forms;
 
 namespace DeltaSockets
@@ -43,13 +45,23 @@ namespace DeltaSockets
 
         public class SocketContainer
         {
-            public AsyncReceiveState rState;
-            public AsyncSendState sState;
+            public AsyncReceiveState rState = new AsyncReceiveState();
+            public AsyncSendState sState = new AsyncSendState();
+
+            public Socket Socket;
+
+            private SocketContainer()
+            {
+            }
+
+            public SocketContainer(Socket argSocket)
+            {
+                Socket = argSocket;
+            }
         }
 
         public class AsyncReceiveState : IDisposable
         {
-            public System.Net.Sockets.Socket Socket;
             public byte[] Buffer = new byte[gBufferSize];
 
             internal MemoryStream _packetBuff;
@@ -97,7 +109,7 @@ namespace DeltaSockets
 
                 if (disposing)
                 {
-                    Socket.Dispose();
+                    //Socket.Dispose();
                     _packetBuff.Dispose();
                     Array.Clear(Buffer, 0, Buffer.Length);
                     // Free any other managed objects here.
@@ -112,17 +124,15 @@ namespace DeltaSockets
 
         public class AsyncSendState : IDisposable
         {
-            public System.Net.Sockets.Socket Socket;
-
             //Public Buffer(Carcassonne.Library.PacketBufferSize - 1) As Byte ' a buffer to store the currently received chunk of bytes
             public byte[] BytesToSend;
 
             public int Progress;
 
-            public AsyncSendState(System.Net.Sockets.Socket argSocket)
+            /*public AsyncSendState(System.Net.Sockets.Socket argSocket)
             {
                 Socket = argSocket;
-            }
+            }*/
 
             public int NextOffset()
             {
@@ -158,7 +168,7 @@ namespace DeltaSockets
 
                 if (disposing)
                 {
-                    Socket.Dispose();
+                    //Socket.Dispose();
                     Array.Clear(BytesToSend, 0, BytesToSend.Length);
                     // Free any other managed objects here.
                     //
@@ -172,16 +182,16 @@ namespace DeltaSockets
 
         public class MessageQueue
         {
-            public System.Collections.Queue Messages = new System.Collections.Queue();
+            public Queue Messages = new Queue();
             public bool Processing;
 
             public event MessageQueuedEventHandler MessageQueued;
 
             public delegate void MessageQueuedEventHandler();
 
-            public void Add(AsyncSendState argState)
+            public void Add(SocketContainer argContainer)
             {
-                Messages.Enqueue(argState);
+                Messages.Enqueue(argContainer);
                 MessageQueued?.Invoke();
             }
         }
