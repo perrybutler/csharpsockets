@@ -369,8 +369,13 @@ namespace DeltaSockets
                 // resize the BytesToSend array to fit both the mSizeBytes and the mPacketBytes
                 // ERROR: Not supported in C#: ReDimStatement
 
-                if (co.sState.BytesToSend.Length != mPacketBytes.Length + mSizeBytes.Length)
-                    Array.Resize(ref co.sState.BytesToSend, mPacketBytes.Length + mSizeBytes.Length);
+                if (co.sState.BytesToSend != null)
+                {
+                    if (co.sState.BytesToSend.Length != mPacketBytes.Length + mSizeBytes.Length)
+                        Array.Resize(ref co.sState.BytesToSend, mPacketBytes.Length + mSizeBytes.Length);
+                }
+                else
+                    co.sState.BytesToSend = new byte[mPacketBytes.Length + mSizeBytes.Length];
 
                 // copy the mSizeBytes and mPacketBytes to the BytesToSend array
                 Buffer.BlockCopy(mSizeBytes, 0, co.sState.BytesToSend, 0, mSizeBytes.Length);
@@ -381,7 +386,7 @@ namespace DeltaSockets
 
                 Console.WriteLine("Ready to send a object of {0} bytes length", co.sState.BytesToSend.Length);
 
-                co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co.sState);
+                co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co);
 
                 Array.Clear(co.sState.BytesToSend, 0, co.sState.BytesToSend.Length); //Reseteamos para la siguiente vez
             }
@@ -455,7 +460,7 @@ namespace DeltaSockets
             //Before we connect we request an id to the master server...
             if (sm.msg is SocketCommand)
             {
-                SocketCommand cmd = sm.CastType<SocketCommand>();
+                SocketCommand cmd = sm.msg.CastType<SocketCommand>();
                 if (cmd != null)
                 {
                     switch (cmd.Command)
@@ -468,13 +473,18 @@ namespace DeltaSockets
                             OnConnectedCallback?.Invoke();
                             break;*/
 
+                        case SocketCommands.ReturnClientIDAfterAccept:
+                            myLogger.Log("Starting new CLIENT connection with ID: {0}", sm.id);
+                            Id = sm.id;
+                            break;
+
                         case SocketCommands.CloseInstance:
                             myLogger.Log("Client is closing connection...");
                             Stop(false);
                             break;
 
                         default:
-                            myLogger.Log("Unknown ClientCallbackion to take! Case: {0}", cmd);
+                            myLogger.Log("Unknown ClientCallbackion to take! Case: {0}", cmd.Command);
                             break;
                     }
                 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using static DeltaSockets.SocketGlobals;
 
@@ -230,6 +231,7 @@ namespace DeltaSockets
             else
                 Console.WriteLine("Overlapping id error!");
 
+            //We don't have a way to know if there was a problem in the transmission ???
             SendToClient(SocketManager.ReturnClientIDAfterAccept(genID), co);
             ClientConnected?.Invoke(co);
 
@@ -303,7 +305,7 @@ namespace DeltaSockets
             {
                 // ## FINAL DATA RECEIVED, PARSE AND PROCESS THE PACKET ##
                 // the TotalBytesReceived is equal to the ReceiveSize, so we are done receiving this Packet...parse it!
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                BinaryFormatter mSerializer = new BinaryFormatter();
                 // rewind the PacketBufferStream so we can de-serialize it
                 co.rState.PacketBufferStream.Position = 0;
                 // de-serialize the PacketBufferStream which will give us an actual Packet object
@@ -469,7 +471,7 @@ namespace DeltaSockets
             //string val = sm.StringValue;
             if (sm.msg is SocketCommand)
             {
-                SocketCommand cmd = sm.CastType<SocketCommand>();
+                SocketCommand cmd = sm.msg.CastType<SocketCommand>();
                 if (cmd != null)
                 {
                     switch (cmd.Command)

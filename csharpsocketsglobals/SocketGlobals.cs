@@ -103,11 +103,11 @@ namespace DeltaSockets
             // the total bytes received for the Packet so far
             public int TotalBytesReceived;
 
-            ~AsyncReceiveState()
+            /*~AsyncReceiveState()
             {
                 Console.WriteLine("Calling Receive Destructor");
                 Dispose();
-            }
+            }*/
 
             // Public implementation of Dispose pattern callable by consumers.
             public void Dispose()
@@ -151,11 +151,11 @@ namespace DeltaSockets
                 Socket = argSocket;
             }*/
 
-            ~AsyncSendState()
+            /*~AsyncSendState()
             {
                 Console.WriteLine("Calling Send Destructor");
                 Dispose();
-            }
+            }*/
 
             public int NextOffset()
             {

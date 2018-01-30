@@ -8,4 +8,3 @@ X:\Visual Studio Projects\csharpsockets\csharpsocketsglobals\obj\Debug\dotnetsoc
 X:\Visual Studio Projects\csharpsockets\csharpsocketsglobals\obj\Debug\dotnetsocketsglobals.pdb
 X:\Visual Studio Projects\csharpsockets\csharpsocketsglobals\bin\Debug\dotnetsocketsglobals.dll
 X:\Visual Studio Projects\csharpsockets\csharpsocketsglobals\bin\Debug\dotnetsocketsglobals.pdb
-D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsglobals\obj\Debug\csharpsocketsglobals.csprojResolveAssemblyReference.cache
