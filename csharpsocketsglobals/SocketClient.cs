@@ -264,8 +264,6 @@ namespace DeltaSockets
                 Console.WriteLine("Client ConnectedToServer => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
 
                 co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
-
-                //mReceiveState.Socket.Dispose(); // x?x? n
             }
             catch (Exception ex)
             {
@@ -321,22 +319,16 @@ namespace DeltaSockets
                 ParseReceivedServerMessage(co.rState.Packet, co);
 
                 // call BeginReceive again, so we can start receiving another packet from this client socket
-                //AsyncReceiveState mNextState = new AsyncReceiveState();
-                //mNextState.Socket = mState.Socket; //Idk, why this new instance ???
-
-                //No hace falta todo esto puesto que el destructor se llama, aunq ??? porque tengo que hacer bien los disposes
-
-                //Console.WriteLine("Client ServerMessageReceived => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
-
                 co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ServerMessageReceived), co);
 
-                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); //Con esto evitamos tener que hacer una instancia más arriba xD x?x?
+                //Dispose of everything we dont need after receive message from server
+                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length);
                 co.rState.ReceiveSize = 0;
                 co.rState.Packet = null;
                 co.rState.TotalBytesReceived = 0;
-                co.rState._packetBuff.Close();
-                co.rState._packetBuff.Dispose();
-                co.rState._packetBuff = new MemoryStream();
+                co.rState.PacketBufferStream.Close();
+                co.rState.PacketBufferStream.Dispose();
+                co.rState.PacketBufferStream = new MemoryStream();
             }
         }
 
@@ -353,8 +345,8 @@ namespace DeltaSockets
         public void Send(object obj, SocketContainer co)
         {
             // serialize the Packet into a stream of bytes which is suitable for sending with the Socket
-            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            using (System.IO.MemoryStream mSerializerStream = new System.IO.MemoryStream())
+            BinaryFormatter mSerializer = new BinaryFormatter();
+            using (MemoryStream mSerializerStream = new MemoryStream())
             {
                 mSerializer.Serialize(mSerializerStream, obj);
 
@@ -387,11 +379,7 @@ namespace DeltaSockets
 
                 Console.WriteLine("Ready to send a object of {0} bytes length", co.sState.BytesToSend.Length);
 
-                //File.WriteAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "clientWrite.txt"), string.Join(" ", co.sState.BytesToSend.Select(x => x.ToString())));
-
                 co.Socket.BeginSend(co.sState.BytesToSend, co.sState.NextOffset(), co.sState.NextLength(), SocketFlags.None, new AsyncCallback(MessagePartSent), co);
-
-                Array.Clear(co.sState.BytesToSend, 0, co.sState.BytesToSend.Length); //Reseteamos para la siguiente vez
             }
         }
 
@@ -411,8 +399,10 @@ namespace DeltaSockets
                 int numBytesSent = 0;
                 // call the EndSend method which will succeed or throw an error depending on if we are still connected
                 numBytesSent = co.Socket.EndSend(ar);
+
                 // increment the total amount of bytes processed so far
                 co.sState.Progress += numBytesSent;
+
                 // determine if we havent' sent all the data for this Packet yet
                 if (co.sState.NextLength() > 0)
                 {
@@ -421,14 +411,12 @@ namespace DeltaSockets
                 }
                 else
                 {
-                    Console.WriteLine("Client MessagePartSent => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
-                    //Console.WriteLine("Client MessagePartSent completed. Clearing stuff...");
+                    Console.WriteLine("Client MessagePartSent completed. Clearing stuff...");
 
-                    //Dispose mState when received completed
+                    //Reset for the next time
                     Array.Clear(co.sState.BytesToSend, 0, co.sState.BytesToSend.Length);
 
-                    //mState.Socket.Dispose(); // x?x? n
-                    //mState = null;
+                    Array.Resize(ref co.sState.BytesToSend, gBufferSize);
                 }
                 // at this point, the EndSend succeeded and we are ready to send something else!
                 // TODO: use the queue to determine what message was sent and show it in the local chat buffer

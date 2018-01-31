@@ -24,21 +24,15 @@ namespace DeltaSockets
     public enum SocketCommands
     {
         //Server
-        //Conn,
+
         ReturnClientIDAfterAccept,
-
-        //AddToServerRoutingTable,
-
-        //ConfirmConnId,
         CloseClients,
-
         ClosedClient,
         Stop,
         UnpoliteStop,
         CustomCommand,
 
         //Client
-        //CreateConnId,
 
         CloseInstance
     }
@@ -59,11 +53,6 @@ namespace DeltaSockets
             {
             }
 
-            /*public SocketContainer(Socket argSocket)
-            {
-                Socket = argSocket;
-            }*/
-
             public SocketContainer(ulong id, Socket socket)
             {
                 myID = id;
@@ -75,25 +64,8 @@ namespace DeltaSockets
         {
             public byte[] Buffer = new byte[gBufferSize];
 
-            internal MemoryStream _packetBuff;
-
             // a buffer for appending received data to build the packet
-            public MemoryStream PacketBufferStream
-            {
-                get
-                {
-                    if (_packetBuff == null)
-                    {
-                        Console.WriteLine("Creating a new MemoryStream");
-                        _packetBuff = new MemoryStream();
-                    }
-                    return _packetBuff;
-                }
-                set
-                {
-                    _packetBuff = value;
-                }
-            }
+            public MemoryStream PacketBufferStream = new MemoryStream();
 
             public object Packet;
 
@@ -102,12 +74,6 @@ namespace DeltaSockets
 
             // the total bytes received for the Packet so far
             public int TotalBytesReceived;
-
-            /*~AsyncReceiveState()
-            {
-                Console.WriteLine("Calling Receive Destructor");
-                Dispose();
-            }*/
 
             // Public implementation of Dispose pattern callable by consumers.
             public void Dispose()
@@ -127,7 +93,8 @@ namespace DeltaSockets
                 if (disposing)
                 {
                     //Socket.Dispose();
-                    _packetBuff.Dispose();
+                    PacketBufferStream.Close();
+                    PacketBufferStream.Dispose();
                     Array.Clear(Buffer, 0, Buffer.Length);
                     // Free any other managed objects here.
                     //
@@ -141,15 +108,9 @@ namespace DeltaSockets
 
         public class AsyncSendState : IDisposable
         {
-            //Public Buffer(Carcassonne.Library.PacketBufferSize - 1) As Byte ' a buffer to store the currently received chunk of bytes
             public byte[] BytesToSend;
 
             public int Progress;
-
-            /*public AsyncSendState(System.Net.Sockets.Socket argSocket)
-            {
-                Socket = argSocket;
-            }*/
 
             /*~AsyncSendState()
             {

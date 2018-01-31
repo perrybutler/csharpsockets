@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using static DeltaSockets.SocketGlobals;
@@ -213,14 +212,7 @@ namespace DeltaSockets
                 return;
             }
             // instruct the client to begin receiving data
-            //AsyncReceiveState mState = new AsyncReceiveState();
-            //mState.Socket = mClientSocket;
-
-            //??? hay que quitar todo lo de los enums para obtener una ID, directamente dar aquí
-            //Tenemos que generar una id asociada a este socket para hacer el socket container
-            //Esta en la linea 455 (case SocketCommands.Conn: ...) esto me lo tengo q traer
-            //En el endreceive es donde tengo q decirle al cliente su id
-
+            //In the very first connection we have to send the id to the client
             ulong genID = 1;
 
             //Give id in a range...
@@ -240,9 +232,6 @@ namespace DeltaSockets
             routingTable[genID].Socket.BeginReceive(routingTable[genID].rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), routingTable[genID]); //ClientMessageReceived
             // begin accepting another client connection
             mServerSocket.BeginAccept(new AsyncCallback(ClientAccepted), mServerSocket);
-
-            //mServerSocket.Dispose(); // x?x?
-            //Console.WriteLine("Server ClientAccepted => CompletedSynchronously: {0}; IsCompleted: {1}", ar.CompletedSynchronously, ar.IsCompleted);
         }
 
         /// <summary>
@@ -327,16 +316,14 @@ namespace DeltaSockets
 
                 co.Socket.BeginReceive(co.rState.Buffer, 0, gBufferSize, SocketFlags.None, new AsyncCallback(ClientMessageReceived), co);
 
-                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length); // x?x?
+                //Dispose of everything we dont need after receive message from client
+                Array.Clear(co.rState.Buffer, 0, co.rState.Buffer.Length);
                 co.rState.ReceiveSize = 0;
                 co.rState.Packet = null;
                 co.rState.TotalBytesReceived = 0;
-                co.rState._packetBuff.Close();
-                co.rState._packetBuff.Dispose();
-                co.rState._packetBuff = new MemoryStream();
-
-                //mState.Socket.Dispose(); // x?x?
-                //mState = null;
+                co.rState.PacketBufferStream.Close();
+                co.rState.PacketBufferStream.Dispose();
+                co.rState.PacketBufferStream = new MemoryStream();
             }
         }
 
@@ -386,8 +373,8 @@ namespace DeltaSockets
         public void SendToClient(object obj, SocketContainer co)
         {
             // serialize the Packet into a stream of bytes which is suitable for sending with the Socket
-            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter mSerializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            using (System.IO.MemoryStream mSerializerStream = new System.IO.MemoryStream())
+            BinaryFormatter mSerializer = new BinaryFormatter();
+            using (MemoryStream mSerializerStream = new MemoryStream())
             {
                 mSerializer.Serialize(mSerializerStream, obj);
 
@@ -455,9 +442,6 @@ namespace DeltaSockets
                     Console.WriteLine("Server MessagePartSent completed. Clearing stuff...");
 
                     Array.Clear(co.sState.BytesToSend, 0, co.sState.BytesToSend.Length);
-
-                    //mState.Socket.Dispose(); // x?x? n
-                    co.sState = null;
                 }
 
                 // at this point, the EndSend succeeded and we are ready to send something else!
@@ -482,25 +466,6 @@ namespace DeltaSockets
                 {
                     switch (cmd.Command)
                     {
-                        /*case SocketCommands.Conn:
-                            //Para que algo se añade aqui debe ocurrir algo...
-                            //Give an id for a client before we add it to the routing table
-                            //and create a request id for the next action that needs it
-
-                            //First, we have to assure that there are free id on the current KeyValuePair to optimize the process...
-                            ulong genID = 1;
-
-                            //Give id in a range...
-                            bool b = routingTable.Keys.FindFirstMissingNumberFromSequence(out genID, new MinMax<ulong>(1, (ulong)routingTable.Count));
-                            myLogger.Log("Adding #{0} client to routing table!", genID); //Esto ni parece funcionar bien
-
-                            SendToClient(SocketManager.SendConnId(genID), handler);
-                            break;*/
-
-                        /*case SocketCommands.ConfirmConnId:
-                            routingTable.Add(sm.id, argContainer);
-                            break;*/
-
                         case SocketCommands.CloseClients:
                             CloseAllClients(sm.id);
                             break;
