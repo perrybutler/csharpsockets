@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using DeltaSockets;
+using System;
 using System.Windows.Forms;
 
 namespace csharpsocketsclient
 {
-    
     public partial class frmClient : Form
     {
-        SocketClient client = new SocketClient();
+        private SocketClient client = new SocketClient();
 
         public frmClient()
         {
@@ -22,7 +16,7 @@ namespace csharpsocketsclient
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            client.ConnectToServer();
+            client.DoConnection();
             btnConnect.Text = "Disconnect";
         }
 
@@ -30,7 +24,7 @@ namespace csharpsocketsclient
         {
             if (btnConnect.Text == "Connect")
             {
-                client.ConnectToServer();
+                client.DoConnection();
                 btnConnect.Text = "Disconnect";
             }
             else
@@ -47,7 +41,7 @@ namespace csharpsocketsclient
 
         private void sendMessage()
         {
-            client.SendMessageToServer("/say " + txtSend.Text);
+            client.SendMessageToServer("/say " + Properties.Resources.lorem_ipsum, client.my);
         }
 
         private void txtSend_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)

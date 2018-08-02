@@ -1,0 +1,18 @@
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\consoleserver.exe.config
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\consoleserver.exe
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\consoleserver.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\dotnetsocketsglobals.dll
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\dotnetsocketsglobals.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.csprojResolveAssemblyReference.cache
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.csproj.CoreCompileInputs.cache
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.exe
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.pdb
+X:\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\consoleserver.exe.config
+X:\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\consoleserver.exe
+X:\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\consoleserver.pdb
+X:\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\dotnetsocketsglobals.dll
+X:\Visual Studio Projects\csharpsockets\consoleserver\bin\Debug\dotnetsocketsglobals.pdb
+X:\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.csprojResolveAssemblyReference.cache
+X:\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.csproj.CoreCompileInputs.cache
+X:\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.exe
+X:\Visual Studio Projects\csharpsockets\consoleserver\obj\Debug\consoleserver.pdb

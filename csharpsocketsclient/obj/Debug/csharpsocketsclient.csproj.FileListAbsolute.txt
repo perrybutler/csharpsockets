@@ -20,3 +20,27 @@ C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\cs
 C:\repo\Google Drive\tasks active\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.GenerateResource.Cache
 C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.exe
 C:\repo\Dropbox\free\csharpsockets\dev\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.exe.config
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.exe
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.dll
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.pdb
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csprojResolveAssemblyReference.cache
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.frmClient.resources
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.Properties.Resources.resources
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.GenerateResource.Cache
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.CoreCompileInputs.cache
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.exe
+D:\VISUAL STUDIO\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.pdb
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.exe.config
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.exe
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\csharpsocketsclient.pdb
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.dll
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\bin\Debug\dotnetsocketsglobals.pdb
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csprojResolveAssemblyReference.cache
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.frmClient.resources
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.Properties.Resources.resources
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.GenerateResource.Cache
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.csproj.CoreCompileInputs.cache
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.exe
+X:\Visual Studio Projects\csharpsockets\csharpsocketsclient\obj\Debug\csharpsocketsclient.pdb
